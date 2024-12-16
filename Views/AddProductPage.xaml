@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.Views.AddProductPage"
+             Title="AddProductPage">
+    <VerticalStackLayout Margin="10" Spacing="15">
+        <Entry 
+            x:Name="productNameEntry"
+            Placeholder="Enter name of product"/>
+
+        <Entry
+            x:Name="productQuantityEntry"
+            Placeholder="Enter quantity"
+            Keyboard="Numeric" />
+
+        <HorizontalStackLayout Spacing="15">
+            <VerticalStackLayout>
+                <Label Text="Choose category" />
+                <Picker x:Name="CategoryPicker"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Label Text="Choose volume unit" />
+                <Picker x:Name="VolumePicker"/>
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Button
+            Text="Add"
+            Clicked="OnAddBtnClicked"/>
+    </VerticalStackLayout>
+</ContentPage>

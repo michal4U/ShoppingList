@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.Views.ListPage"
+             Title="Shopping List">
+    <VerticalStackLayout Padding="20">
+        <Button Text="Add Product" Clicked="NavigateToAddProductPage" Margin="20" WidthRequest="175" />
+    </VerticalStackLayout>
+</ContentPage>

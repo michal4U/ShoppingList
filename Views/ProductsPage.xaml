@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.Views.ProductsPage"
+             Title="Products">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Text="+" 
+            Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+    <VerticalStackLayout>
+        <CollectionView x:Name="productCollectionView" ItemsSource="{Binding Products}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" BackgroundColor="DarkGray">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Dane produktu -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="18">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="TextColor" Value="Gray" />
+                                    <Setter Property="TextDecorations" Value="Strikethrough" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding Category}" FontSize="14" />
+
+                        <!-- Przycisk Usuń -->
+                        <Button 
+                            Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                            Text="Usuń" 
+                            Clicked="OnDeleteClicked" 
+                            BackgroundColor="Red" 
+                            TextColor="White" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>
