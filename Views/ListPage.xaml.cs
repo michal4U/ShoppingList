@@ -19,5 +19,6 @@ namespace ShoppingList.Views
         {
             await Shell.Current.GoToAsync("products");
         }
+
     }
 }

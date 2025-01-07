@@ -1,9 +1,13 @@
-﻿using System;
-
-namespace ShoppingList.Models;
-
-public class Category
+﻿namespace ShoppingList.Models
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
+    public class Category
+    {
+        public int Id { get; set; }
+        public required string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name; // Zwróć nazwę kategorii
+        }
+    }
 }

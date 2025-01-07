@@ -10,7 +10,20 @@
                 FontSize="17" />
             <Label 
                 Text="{Binding Category}" 
-                Margin="5"/>
+                Margin="5"
+                TextColor="Black"/>
+            <Label
+                Text="{Binding Quantity}"
+                Margin="5"
+                TextColor="Black"/>
+            <Label
+                Text="{Binding Category}"
+                Margin="5"
+                TextColor="Black"/>
+            <Label
+                Text="{Binding Unit}"
+                Margin="5"
+                TextColor="Black"/>
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentView>

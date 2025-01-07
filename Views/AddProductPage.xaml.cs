@@ -1,119 +1,74 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Xml;
-using System.Xml.Linq;
 using ShoppingList.Models;
 using ShoppingList.Services;
+using Microsoft.Maui.Controls;
 
-namespace ShoppingList.Views;
-
-public partial class AddProductPage : ContentPage
+namespace ShoppingList.Views
 {
-    public ObservableCollection<Product> Products { get; set; }
-    public ObservableCollection<Category> Categories { get; set; }
-    public ObservableCollection<string> Volumes { get; set; } // Teraz lista stringów dla jednostek objętości
-    private FileService fileService = new FileService();
-
-    public AddProductPage()
+    public partial class AddProductPage : ContentPage
     {
-        InitializeComponent();
-        fileService = new();
-        Categories = new ObservableCollection<Category>();
-        Products = new ObservableCollection<Product>();
-        Volumes = new ObservableCollection<string>(); // Inicjalizacja listy stringów
-        CategoryPicker.ItemsSource = Categories;
-        CategoryPicker.ItemDisplayBinding = new Binding("Name");
-        VolumePicker.ItemsSource = Volumes; // Teraz przypisanie listy stringów
-    }
+        public ObservableCollection<Category> Categories { get; set; }
+        public ObservableCollection<string> Volumes { get; set; }
+        private FileService fileService = new FileService();
 
-    private void OnAddBtnClicked(object sender, EventArgs e)
-    {
-        string filepath = "products.xml";
-        string fullpath = Path.Combine(FileSystem.AppDataDirectory, filepath);
-        var products = fileService.LoadProducts();
-        var maxId = products.Count;
-        string productName = productNameEntry.Text;
-        string productQuantityText = productQuantityEntry.Text;
-
-        // Sprawdzenie, czy ilość jest liczbą
-        if (!decimal.TryParse(productQuantityText, out decimal productQuantity) || productQuantity <= 0)
+        public AddProductPage()
         {
-            DisplayAlert("Błąd", "Proszę podać prawidłową ilość!", "OK");
-            return;
+            InitializeComponent();
+            Categories = new ObservableCollection<Category>();
+            Volumes = new ObservableCollection<string>();
+            LoadCategories();
+            LoadVolumes();
+
+            // Ustawienie źródła danych dla Pickerów
+            CategoryPicker.ItemsSource = Categories;
+            VolumePicker.ItemsSource = Volumes;
         }
 
-        var selectedCategory = CategoryPicker.SelectedItem as Category;
-        if (selectedCategory == null)
+        private void LoadCategories()
         {
-            DisplayAlert("Błąd", "Nie wybrano kategorii!", "OK");
-            return;
+            var categories = fileService.LoadCategories();
+            Categories.Clear();
+            foreach (var category in categories)
+            {
+                Categories.Add(category);
+            }
         }
 
-        // Używamy string do przechowywania jednostki objętości
-        string selectedVolume = VolumePicker.SelectedItem as string;
-        if (string.IsNullOrEmpty(selectedVolume))
+        private void LoadVolumes()
         {
-            DisplayAlert("Błąd", "Nie wybrano jednostki objętości!", "OK");
-            return;
+            var volumes = fileService.LoadVolumes();
+            Volumes.Clear();
+            foreach (var volume in volumes)
+            {
+                Volumes.Add(volume);
+            }
         }
 
-        var newProduct = new Product
+        private void OnAddBtnClicked(object sender, EventArgs e)
         {
-            Id = maxId + 1,
-            Name = productName,
-            CategoryId = selectedCategory.Id,
-            Quantity = productQuantity,
-            Volume = selectedVolume // Jednostka objętości jako string
-        };
+            // Walidacja danych
+            if (string.IsNullOrWhiteSpace(productNameEntry.Text) ||
+                !int.TryParse(productQuantityEntry.Text, out int quantity) ||
+                CategoryPicker.SelectedItem == null ||
+                VolumePicker.SelectedItem == null)
+            {
+                DisplayAlert("Błąd", "Proszę wypełnić wszystkie pola.", "OK");
+                return;
+            }
 
-        var xmlDoc = XDocument.Load(fullpath);
-        xmlDoc.Root.Add(new XElement("Product",
-            new XElement("Id", newProduct.Id),
-            new XElement("Name", newProduct.Name),
-            new XElement("CategoryId", newProduct.CategoryId),
-            new XElement("Quantity", newProduct.Quantity),
-            new XElement("Volume", newProduct.Volume) // Zapisz jednostkę objętości jako string
-        ));
-        xmlDoc.Save(fullpath);
-        DisplayAlert("Dodano nowy produkt", "Produkt został dodany pomyślnie.", "OK");
-        Shell.Current.GoToAsync("products");
-    }
+            var newProduct = new Product
+            {
+                Name = productNameEntry.Text,
+                Quantity = quantity,
+                Volume = VolumePicker.SelectedItem.ToString(),
+                IsPurchased = false,
+                CategoryId = ((Category)CategoryPicker.SelectedItem).Id // Użyj ID kategorii
+            };
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        DisplayCategories();
-        DisplayVolumes();
-    }
-
-    private void DisplayCategories()
-    {
-        var categories = fileService.LoadCategories();
-
-        Categories.Clear();
-        foreach (var category in categories)
-        {
-            Categories.Add(category);
+            fileService.AddProduct(newProduct);
+            MessagingCenter.Send(this, "ProductAdded");
+            Navigation.PopAsync();
         }
-    }
-
-    private void DisplayVolumes()
-    {
-        var volumes = fileService.LoadVolumes(); // Zmodyfikuj tę metodę w FileService, jeśli to konieczne
-
-        Volumes.Clear();
-        foreach (var volume in volumes)
-        {
-            Volumes.Add(volume); // Dodanie jednostek objętości do listy
-        }
-    }
-
-    private async void NavigateToAddProductPage(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("addproduct");
-    }
-
-    private async void NavigateToProductsPage(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("products");
     }
 }

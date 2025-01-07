@@ -1,69 +1,70 @@
-using System.Collections.ObjectModel;
 using ShoppingList.Models;
 using ShoppingList.Services;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Microsoft.Maui.Controls;
 
 namespace ShoppingList.Views
 {
     public partial class ProductsPage : ContentPage
     {
-        public ObservableCollection<Product> Products { get; set; }
-        private FileService fileService;
+        private FileService _fileService; // U¿yj _fileService z wielk¹ liter¹ "S"
+        public ObservableCollection<Product> Products { get; private set; }
 
         public ProductsPage()
         {
             InitializeComponent();
-            fileService = new FileService();
-            Products = new ObservableCollection<Product>();
+            _fileService = new FileService(); // U¿yj _fileService
+            Products = _fileService.LoadProducts();
             BindingContext = this;
+
+            // Subskrybuj wiadomoœæ o dodaniu produktu
+            MessagingCenter.Subscribe<AddProductPage>(this, "ProductAdded", (sender) =>
+            {
+                Products = _fileService.LoadProducts();
+                OnPropertyChanged(nameof(Products)); // Powiadom o zmianie
+            });
         }
 
-        protected override void OnAppearing()
+        private void OnAddClicked(object sender, EventArgs e)
         {
-            base.OnAppearing();
-            LoadProducts();
+            Navigation.PushAsync(new AddProductPage());
         }
 
-        private void LoadProducts()
+        private void OnDeleteClicked(object sender, Product product)
         {
-            var products = fileService.LoadProducts(); // Za³aduj produkty z pliku XML
+            if (product != null)
+            {
+                _fileService.DeleteProduct(product.Id); // Usuñ produkt z pliku
+                Products.Remove(product); // Usuñ produkt z kolekcji
+                
+            }
+        }
+
+        private void OnProductTapped(object sender, EventArgs e)
+        {
+            if (sender is Grid grid && grid.BindingContext is Product product)
+            {
+                
+                product.IsPurchased = !product.IsPurchased;
+                _fileService.SaveProducts(); // U¿yj _fileService
+                SortProducts();
+            }
+            _fileService.SaveProducts();
+        }
+
+        private void SortProducts()
+        {
+            var sortedProducts = Products
+                .OrderBy(p => p.IsPurchased)
+                .ThenBy(p => p.Name)
+                .ToList();
+
             Products.Clear();
-            foreach (var product in products)
+            foreach (var product in sortedProducts)
             {
                 Products.Add(product);
             }
-        }
-
-        // Metoda obs³uguj¹ca klikniêcie na produkt
-        private void OnProductClicked(object sender, EventArgs e)
-        {
-            var button = sender as Button;
-            var product = button?.BindingContext as Product;
-
-            if (product != null)
-            {
-                // Zmieñ stan "IsSelected" (przekreœlenie/zmiana koloru)
-                product.IsSelected = !product.IsSelected;
-
-                // Odœwie¿ widok, aby pokazaæ zmiany
-                this.InvalidateMeasure(); // Odœwie¿enie ca³ej strony
-            }
-        }
-
-        // Metoda usuwania produktu
-        private void OnDeleteClicked(object sender, EventArgs e)
-        {
-            var button = sender as Button;
-            var product = button?.BindingContext as Product;
-            if (product != null)
-            {
-                fileService.DeleteProduct(product.Id); // Usuñ produkt z pliku XML
-                LoadProducts(); // Odœwie¿ listê po usuniêciu
-            }
-        }
-
-        private async void OnAddClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("addproduct"); // PrzejdŸ do strony dodawania produktu
         }
     }
 }
