@@ -20,7 +20,6 @@ namespace ShoppingList.Views
             LoadCategories();
             LoadVolumes();
 
-            // Ustawienie źródła danych dla Pickerów
             CategoryPicker.ItemsSource = Categories;
             VolumePicker.ItemsSource = Volumes;
         }
@@ -47,7 +46,6 @@ namespace ShoppingList.Views
 
         private void OnAddBtnClicked(object sender, EventArgs e)
         {
-            // Walidacja danych
             if (string.IsNullOrWhiteSpace(productNameEntry.Text) ||
                 !int.TryParse(productQuantityEntry.Text, out int quantity) ||
                 CategoryPicker.SelectedItem == null ||
@@ -63,7 +61,7 @@ namespace ShoppingList.Views
                 Quantity = quantity,
                 Volume = VolumePicker.SelectedItem.ToString(),
                 IsPurchased = false,
-                CategoryId = ((Category)CategoryPicker.SelectedItem).Id // Użyj ID kategorii
+                CategoryId = ((Category)CategoryPicker.SelectedItem).Id
             };
 
             fileService.AddProduct(newProduct);
