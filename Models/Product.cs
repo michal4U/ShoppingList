@@ -10,8 +10,8 @@ namespace ShoppingList.Models
         private string _volume;
         private int _quantity;
         private bool _isPurchased;
-        private int _categoryId; // Id kategorii
-        public Category Category { get; set; } // Obiekt kategorii (opcjonalnie)
+        private int _categoryId;
+        public Category Category { get; set; }
 
         public int Id
         {
