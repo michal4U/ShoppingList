@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using ShoppingList.Models;
-using Microsoft.Maui.Storage; // Upewnij się, że masz odpowiednią przestrzeń nazw
+using Microsoft.Maui.Storage;
 
 namespace ShoppingList.Services
 {
@@ -25,7 +25,7 @@ namespace ShoppingList.Services
             _categoriesPath = Path.Combine(FileSystem.AppDataDirectory, CategoriesFileName);
             _volumesPath = Path.Combine(FileSystem.AppDataDirectory, VolumesFileName);
             Products = new ObservableCollection<Product>();
-            LoadProducts(); // Ładuj produkty przy inicjalizacji
+            LoadProducts();
         }
 
         public ObservableCollection<Product> LoadProducts()
@@ -75,7 +75,7 @@ namespace ShoppingList.Services
         public void AddProduct(Product product)
         {
             Products.Add(product);
-            SaveProducts(); // Zapisz po dodaniu produktu
+            SaveProducts();
         }
 
         public void DeleteProduct(int productId)
@@ -84,7 +84,7 @@ namespace ShoppingList.Services
             if (productToRemove != null)
             {
                 Products.Remove(productToRemove);
-                SaveProducts(); // Zapisz po usunięciu produktu
+                SaveProducts();
             }
             SaveProducts() ;
         }
@@ -95,7 +95,6 @@ namespace ShoppingList.Services
 
             if (!File.Exists(_categoriesPath))
             {
-                // Dodaj domyślne kategorie, jeśli plik nie istnieje
                 categories.Add(new Category { Id = 1, Name = "Artykuły spożywcze" });
                 categories.Add(new Category { Id = 2, Name = "Napoje" });
                 return categories;
@@ -120,7 +119,6 @@ namespace ShoppingList.Services
 
             if (!File.Exists(_volumesPath))
             {
-                // Dodaj domyślne jednostki, jeśli plik nie istnieje
                 volumes.Add("szt.");
                 volumes.Add("l");
                 volumes.Add("kg");
