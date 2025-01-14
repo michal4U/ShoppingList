@@ -12,7 +12,7 @@ namespace ShoppingList.Views
         public ProductItemView()
         {
             InitializeComponent();
-            _fileService = new FileService(); // Inicjalizacja FileService
+            _fileService = new FileService();
         }
 
         private void OnPurchasedClicked(object sender, EventArgs e)
@@ -20,7 +20,7 @@ namespace ShoppingList.Views
             if (BindingContext is Product product)
             {
                 product.IsPurchased = !product.IsPurchased;
-                _fileService.SaveProducts(); // Zapisz zmiany po zaznaczeniu
+                _fileService.SaveProducts();
             }
         }
 
@@ -28,7 +28,7 @@ namespace ShoppingList.Views
         {
             if (BindingContext is Product product)
             {
-                DeleteRequested?.Invoke(this, product); // Wywo³aj zdarzenie usuwania
+                DeleteRequested?.Invoke(this, product);
             }
         }
 
@@ -38,7 +38,7 @@ namespace ShoppingList.Views
             if (BindingContext is Product product)
             {
                 product.Quantity++;
-                _fileService.SaveProducts(); // Zapisz zmiany po zwiêkszeniu iloœci
+                _fileService.SaveProducts();
             }
         }
 
@@ -47,7 +47,7 @@ namespace ShoppingList.Views
             if (BindingContext is Product product && product.Quantity > 0)
             {
                 product.Quantity--;
-                _fileService.SaveProducts(); // Zapisz zmiany po zmniejszeniu iloœci
+                _fileService.SaveProducts();
             }
         }
 
