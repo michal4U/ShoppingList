@@ -7,7 +7,7 @@
 
         public override string ToString()
         {
-            return Name; // Zwróć nazwę kategorii
+            return Name;
         }
     }
 }
