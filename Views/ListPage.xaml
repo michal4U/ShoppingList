@@ -5,6 +5,6 @@
              Title="Shopping List">
     <VerticalStackLayout Padding="20">
         <Button Text="Dodaj Produkt" Clicked="NavigateToAddProductPage" Margin="20" WidthRequest="175" />
-        <Button Text="Dodaj Kategorie" Clicked="NavigateToAddCategoryPage" Margin="20" WidthRequest="175" />
+        
     </VerticalStackLayout>
 </ContentPage>
