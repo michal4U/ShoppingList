@@ -8,21 +8,20 @@ namespace ShoppingList.Views
 {
     public partial class ProductsPage : ContentPage
     {
-        private FileService _fileService; // U¿yj _fileService z wielk¹ liter¹ "S"
+        private FileService _fileService; 
         public ObservableCollection<Product> Products { get; private set; }
 
         public ProductsPage()
         {
             InitializeComponent();
-            _fileService = new FileService(); // U¿yj _fileService
+            _fileService = new FileService();
             Products = _fileService.LoadProducts();
             BindingContext = this;
 
-            // Subskrybuj wiadomoœæ o dodaniu produktu
             MessagingCenter.Subscribe<AddProductPage>(this, "ProductAdded", (sender) =>
             {
                 Products = _fileService.LoadProducts();
-                OnPropertyChanged(nameof(Products)); // Powiadom o zmianie
+                OnPropertyChanged(nameof(Products));
             });
         }
 
@@ -35,8 +34,8 @@ namespace ShoppingList.Views
         {
             if (product != null)
             {
-                _fileService.DeleteProduct(product.Id); // Usuñ produkt z pliku
-                Products.Remove(product); // Usuñ produkt z kolekcji
+                _fileService.DeleteProduct(product.Id);
+                Products.Remove(product);
                 
             }
         }
@@ -47,7 +46,7 @@ namespace ShoppingList.Views
             {
                 
                 product.IsPurchased = !product.IsPurchased;
-                _fileService.SaveProducts(); // U¿yj _fileService
+                _fileService.SaveProducts();
                 SortProducts();
             }
             _fileService.SaveProducts();
